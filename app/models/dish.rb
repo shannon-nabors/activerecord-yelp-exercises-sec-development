@@ -26,7 +26,14 @@ class Dish < ActiveRecord::Base
 
     def self.average_tag_count
         #Ideally find a different way to do this...
-        sql = ("SELECT avg(tag_count) from (SELECT count(tags.id) as tag_count FROM dishes LEFT OUTER JOIN dish_tags ON dish_tags.dish_id = dishes.id LEFT OUTER JOIN tags ON tags.id = dish_tags.tag_id GROUP by dishes.id)")
+        sql = %{
+            SELECT avg(tag_count) from (
+                SELECT count(tags.id) as tag_count FROM dishes
+                LEFT OUTER JOIN dish_tags ON dish_tags.dish_id = dishes.id
+                LEFT OUTER JOIN tags ON tags.id = dish_tags.tag_id
+                GROUP by dishes.id
+            )
+        }
         avg_count = ActiveRecord::Base.connection.execute(sql)
         avg_count[0]["avg(tag_count)"].round(2)
     end
