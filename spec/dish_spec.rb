@@ -56,25 +56,27 @@ describe 'Dish' do
     end
 
     describe ".max_tags" do
-      la_malinche = Restaurant.create(name: "La Malinche")
-      vegetarian = Tag.create(name: "Vegetarian")
-      tapas = Tag.create(name: "Tapas")
-      spicy = Tag.create(name: "Spicy")
-      datiles = Dish.create(name: "Datiles", restaurant: la_malinche)
-      patatas = Dish.create(name: "Patatas Bravas", restaurant: la_malinche)
-      empanada = Dish.create(name: "Beef Empanada", restaurant: la_malinche)
-
-      datiles.tags << tapas
-      patatas.tags << [tapas, vegetarian]
-      empanada.tags << tapas
+      let(:la_malinche) { Restaurant.create(name: "La Malinche") }
+      let(:vegetarian) { Tag.create(name: "Vegetarian") }
+      let(:tapas) { Tag.create(name: "Tapas") }
+      let(:spicy) { Tag.create(name: "Spicy") }
+      let(:datiles) { Dish.create(name: "Datiles", restaurant: la_malinche) }
+      let(:patatas) { Dish.create(name: "Patatas Bravas", restaurant: la_malinche) }
+      let(:empanada) { Dish.create(name: "Beef Empanada", restaurant: la_malinche) }
 
       it "returns the dish with the most tags" do
+        datiles.tags << tapas
+        patatas.tags << [tapas, vegetarian]
+        empanada.tags << tapas
+
         expect(Dish.max_tags).to eq(patatas)
       end
 
-      empanada.tags << spicy
-
       it "returns an array if there's a tie" do
+        datiles.tags << tapas
+        patatas.tags << [tapas, vegetarian]
+        empanada.tags << [tapas, spicy]
+
         expect(Dish.max_tags).to eq([patatas, empanada])
       end
     end
