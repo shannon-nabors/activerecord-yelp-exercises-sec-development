@@ -9,11 +9,11 @@ class Restaurant < ActiveRecord::Base
     scope :large_menu, -> { joins(:dishes).group("restaurant_id").having("count(restaurant_id) > 20") }
 
     def self.name_like(n)
-        self.where('name LIKE ?', "%#{n}%")
+        where('name LIKE ?', "%#{n}%")
     end
 
     def self.name_not_like(n)
-        self.where('name NOT LIKE ?', "%#{n}%")
+        where('name NOT LIKE ?', "%#{n}%")
     end
 
     def self.max_dishes
@@ -26,7 +26,7 @@ class Restaurant < ActiveRecord::Base
     def self.vegetarian
         #having trouble figuring out how to do this with activerecord
         #methods, will return to this
-        self.all.select do |r|
+        all.select do |r|
             r.dishes.all? { |dish| dish.vegetarian? }
         end
     end
