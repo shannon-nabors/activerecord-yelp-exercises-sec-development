@@ -13,6 +13,14 @@ class Dish < ActiveRecord::Base
         !!Dish.vegetarian.find_by_id(self.id)
     end
 
+    def tag_count
+        Tag.joins(:dishes).where("dishes.id = ?", self.id).count(:name)
+    end
+
+    def tag_names
+        Tag.joins(:dishes).where("dishes.id = ?", self.id).pluck(:name)
+    end
+
     def self.names
         pluck(:name)
     end
