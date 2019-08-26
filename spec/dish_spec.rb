@@ -43,76 +43,87 @@ describe 'Dish' do
   end
 
   describe "Class methods:" do
-
     let(:la_malinche) { Restaurant.create(name: "La Malinche") }
+    let(:vegetarian) { Tag.create(name: "Vegetarian") }
+    let(:tapas) { Tag.create(name: "Tapas") }
+    let(:spicy) { Tag.create(name: "Spicy") }
+    let(:datiles) { Dish.create(name: "Datiles", restaurant: la_malinche) }
+    let(:patatas) { Dish.create(name: "Patatas Bravas", restaurant: la_malinche) }
+    let(:empanada) { Dish.create(name: "Beef Empanada", restaurant: la_malinche) }
 
-    describe ".names" do
-      it "returns an array of all dishes' names" do
-        Dish.create(name: "Datiles", restaurant: la_malinche)
-        Dish.create(name: "Patatas Bravas", restaurant: la_malinche)
-
-        expect(Dish.names).to eq(["Datiles", "Patatas Bravas"])
-      end
+    it ".names returns an array of all dishes' names" do
+      Dish.create(name: "Datiles", restaurant: la_malinche)
+      Dish.create(name: "Patatas Bravas", restaurant: la_malinche)
+      expect(Dish.names.length).to eq(2)
+      expect(Dish.names).to include("Patatas Bravas")
     end
 
-    describe ".max_tags" do
-      let(:la_malinche) { Restaurant.create(name: "La Malinche") }
-      let(:vegetarian) { Tag.create(name: "Vegetarian") }
-      let(:tapas) { Tag.create(name: "Tapas") }
-      let(:spicy) { Tag.create(name: "Spicy") }
-      let(:datiles) { Dish.create(name: "Datiles", restaurant: la_malinche) }
-      let(:patatas) { Dish.create(name: "Patatas Bravas", restaurant: la_malinche) }
-      let(:empanada) { Dish.create(name: "Beef Empanada", restaurant: la_malinche) }
+    it ".max_tags returns the dish with the most tags" do
+      datiles.tags << tapas
+      patatas.tags << [tapas, vegetarian]
+      empanada.tags << tapas
 
-      it "returns the dish with the most tags" do
-        datiles.tags << tapas
-        patatas.tags << [tapas, vegetarian]
-        empanada.tags << tapas
-
-        expect(Dish.max_tags).to eq(patatas)
-      end
-
-      it "returns an array if there's a tie" do
-        datiles.tags << tapas
-        patatas.tags << [tapas, vegetarian]
-        empanada.tags << [tapas, spicy]
-
-        expect(Dish.max_tags).to eq([patatas, empanada])
-      end
+      expect(Dish.max_tags).to eq(patatas)
     end
 
-    describe ".untagged" do
-      it "returns an array of any dishes with no tags" do
-        la_malinche = Restaurant.create(name: "La Malinche")
-        tapas = Tag.create(name: "Tapas")
-        datiles = Dish.create(name: "Datiles", restaurant: la_malinche)
-        patatas = Dish.create(name: "Patatas Bravas", restaurant: la_malinche)
-        datiles.tags << tapas
+    it ".max_tags returns an array if there's a tie" do
+      datiles.tags << tapas
+      patatas.tags << [tapas, vegetarian]
+      empanada.tags << [tapas, spicy]
 
-        expect(Dish.untagged).to eq([patatas])
-      end
+      expect(Dish.max_tags).to eq([patatas, empanada])
     end
 
-    describe ".average_tag_count" do
-      it "returns the mean tag count for all dishes" do
-        la_malinche = Restaurant.create(name: "La Malinche")
-        vegetarian = Tag.create(name: "Vegetarian")
-        tapas = Tag.create(name: "Tapas")
-        spicy = Tag.create(name: "Spicy")
-        datiles = Dish.create(name: "Datiles", restaurant: la_malinche)
-        patatas = Dish.create(name: "Patatas Bravas", restaurant: la_malinche)
-        empanada = Dish.create(name: "Beef Empanada", restaurant: la_malinche)
+    it ".untagged returns an array of any dishes with no tags" do
+      datiles.tags << tapas
+      empanada.tags << spicy
 
-        datiles.tags << tapas
-
-        expect(Dish.average_tag_count).to eq(0.33)
-
-        patatas.tags << tapas
-        patatas.tags << vegetarian
-
-        expect(Dish.average_tag_count).to eq(1.00)
-      end
+      expect(Dish.untagged).to eq([patatas])
     end
+
+    it ".average_tag_count returns the mean tag count for all dishes" do
+      patatas.tags = []
+      empanada.tags = []
+      datiles.tags << tapas
+
+      expect(Dish.average_tag_count).to eq(0.33)
+
+      patatas.tags << tapas
+      patatas.tags << vegetarian
+
+      expect(Dish.average_tag_count).to eq(1.00)
+    end
+
+  end
+
+  describe "Instance methods:" do
+    let(:la_malinche) { Restaurant.create(name: "La Malinche") }
+    let(:vegetarian) { Tag.create(name: "Vegetarian") }
+    let(:tapas) { Tag.create(name: "Tapas") }
+    let(:spicy) { Tag.create(name: "Spicy") }
+    let(:datiles) { Dish.create(name: "Datiles", restaurant: la_malinche) }
+    let(:patatas) { Dish.create(name: "Patatas Bravas", restaurant: la_malinche) }
+    let(:empanada) { Dish.create(name: "Beef Empanada", restaurant: la_malinche) }
+
+    it "#tag_count returns the number of tags the dish has" do
+      datiles.tags << tapas
+      expect(datiles.tag_count).to eq(1)
+      datiles.tags << [spicy, vegetarian]
+      expect(datiles.tag_count).to eq(3)
+    end
+
+    it "#tag_names returns an array of the dish's tags' names" do
+      empanada.tags << spicy
+      patatas.tags << [vegetarian, tapas]
+      expect(empanada.tag_names).to eq(["Spicy"])
+      expect(patatas.tag_names).to include("Vegetarian")
+    end
+
+    # it "#most_popular_tag returns the most widely used tag for a dish" do
+    # end
+
+    # it "#most_popular_tag returns an array if there's a tie" do
+    # end
 
   end
 
