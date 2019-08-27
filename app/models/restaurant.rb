@@ -1,12 +1,22 @@
 class Restaurant < ActiveRecord::Base
+
+    ############################## Relationships #################################
+
     has_many :dishes
+
+    ############################## Validations ###################################
+
     validates :name, presence: true
+    
+    ################################# Scopes #####################################
 
     scope :mcdonalds, -> { find_by(name: "McDonald's") }
     scope :tenth, -> { limit(1).offset(9)[0] }
     scope :with_long_names, -> { where("LENGTH(name) > 12") }
     scope :focused, -> { joins(:dishes).group("restaurant_id").having("count(restaurant_id) < 5") }
     scope :large_menu, -> { joins(:dishes).group("restaurant_id").having("count(restaurant_id) > 20") }
+
+    ############################# Class Methods ##################################
 
     def self.name_like(n)
         where('name LIKE ?', "%#{n}%")

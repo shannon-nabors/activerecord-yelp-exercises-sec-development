@@ -1,8 +1,16 @@
 class Tag < ActiveRecord::Base
+
+    ############################## Relationships #################################
+
     has_many :dish_tags
     has_many :dishes, through: :dish_tags
+
+    ############################## Validations ###################################
+
     validates :name, length: { minimum: 3, too_short: "too short" }
     validate :two_words_max
+
+    ############################# Private Methods ################################
 
     private
     

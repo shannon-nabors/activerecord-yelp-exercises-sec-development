@@ -1,13 +1,23 @@
 class Dish < ActiveRecord::Base
+
+    ############################## Relationships #################################
+
     belongs_to :restaurant
     has_many :dish_tags
     has_many :tags, through: :dish_tags
+
+    ############################## Validations ###################################
+
     validates :name, presence: true
     validates :restaurant_id, presence: true
     validate :no_duplicate_tags
 
+    ################################# Scopes #####################################
+
     scope :vegetarian, -> { joins(:tags).where("tags.name = 'Vegetarian'") }
     scope :untagged, -> { eager_load(:tags).where("tags.id IS NULL") }
+
+    ########################### Instance Methods #################################
 
     def vegetarian?
         !!Dish.vegetarian.find_by_id(self.id)
@@ -20,6 +30,8 @@ class Dish < ActiveRecord::Base
     def tag_names
         Tag.joins(:dishes).where("dishes.id = ?", self.id).pluck(:name)
     end
+
+    ############################# Class Methods ##################################
 
     def self.names
         pluck(:name)
@@ -46,6 +58,8 @@ class Dish < ActiveRecord::Base
         avg_count[0]["avg(tag_count)"].round(2)
     end
 
+    ############################# Private Methods ################################
+    
     private
 
     def no_duplicate_tags
