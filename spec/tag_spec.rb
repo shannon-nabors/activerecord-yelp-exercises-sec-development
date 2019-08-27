@@ -71,13 +71,17 @@ describe 'Tag' do
     end
 
     it ".unused returns all tags that haven't been used" do
+      tapas = Tag.create(name:"Tapas")
+      spicy = Tag.create(name:"Spicy")
+      vegetarian = Tag.create(name:"Vegetarian")
+
       datiles.tags << tapas
 
       expect(Tag.unused.length).to eq(2)
 
       patatas.tags << [tapas]
       empanada.tags << [tapas, spicy]
-
+      
       expect(Tag.unused).to eq([vegetarian])
     end
 
@@ -87,7 +91,7 @@ describe 'Tag' do
       empanada.tags << [tapas, spicy]
       calamari.tags << tapas
       olives.tags << [vegetarian, tapas]
-      
+ 
       expect(Tag.uncommon.length).to eq(2)
 
       datiles.tags << spicy
