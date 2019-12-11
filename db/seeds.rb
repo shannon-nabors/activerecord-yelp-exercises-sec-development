@@ -4,6 +4,11 @@ Restaurant.destroy_all
 Dish.destroy_all
 Tag.destroy_all
 DishTag.destroy_all
+Order.destroy_all
+Customer.destroy_all
+Review.destroy_all
+OrderDish.destroy_all
+
 
 restaurants = ["Chipotle", "Strapazza", "Columbia Alehouse", "Eggspectations", "Chopt", "KFC", "La Malinche", "McDonald's", "Lebanese Taverna", "Roti", "District Taco", "Cava", "Mod Pizza", "Red Lobster", "Hunan Manor", "House of India", "Bollywood Masala", "La Palapa Too", "Uncle Julio's", "McGinty's"]
 dishes = ["Hamburger", "Fish Tacos", "Sesame Chicken", "Chicken Korma", "Falafel", "Dumplings", "Reuben Sandwich", "French Fries", "Rice Bowl", "Fish and Chips", "Chicken Tikka Masala", "Samosas", "Chicken Sandwich", "Patatas Bravas", "Vegetable Omelet", "Spaghetti", "Caesar Salad", "Spinach Ravioli", "Steak Fajitas", "Pepperoni Pizza", "Fried Rice", "Cheese Pizza", "Palak Paneer", "Drumsticks", "Shrimp Scampi", "Chips and Guacamole"]
