@@ -30,11 +30,13 @@ def longitude
     rand(76.0..78.0)
 end
 
-def add_dishes_to_order(restaurant_dishes, order)
+def add_dishes_to_order(restaurant_dishes, customer_id, restaurant_id)
+    order = Order.new(customer_id: customer_id, restaurant_id: restaurant_id)
     dishes = restaurant_dishes.sample(rand(1..5))
     dishes.each do |dish|
-        OrderDish.create(order_id: order.id, dish_id: dish.id)
+        OrderDish.create(order: order, dish: dish)
     end
+    order.save
 end
 
 def write_review
@@ -82,9 +84,8 @@ end
 50.times do
     customer = Customer.all.sample
     restaurant = Restaurant.all.sample
-    order = Order.create(customer_id: customer.id, restaurant_id: restaurant.id)
-    
-    add_dishes_to_order(restaurant.dishes, order)
+
+    add_dishes_to_order(restaurant.dishes, customer.id, restaurant.id)
 
     if opinions?
         Review.create(content: write_review, rating: rand(1..5), date: recent_date, customer_id: customer.id, restaurant_id: restaurant.id)
