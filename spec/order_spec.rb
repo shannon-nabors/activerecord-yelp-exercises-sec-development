@@ -10,27 +10,31 @@ describe 'Order' do
 
     describe "Validations:" do
         it "must be associated with a customer" do
-            expect(Order.new(customer: nil, restaurant: mcdonalds).valid?).to be false
-            expect(Order.new(customer: shirley, restaurant: mcdonalds).valid?).to be true
+            expect(Order.new(customer: nil, restaurant: mcdonalds, dishes: [burger]).valid?).to be false
+            expect(Order.new(customer: shirley, restaurant: mcdonalds, dishes: [burger]).valid?).to be true
         end
 
         it "must be associated with a restaurant" do
-            expect(Order.new(customer: shirley, restaurant: nil).valid?).to be false
-            expect(Order.new(customer: shirley, restaurant: mcdonalds).valid?).to be true
+            expect(Order.new(customer: shirley, restaurant: nil, dishes: [burger]).valid?).to be false
+            expect(Order.new(customer: shirley, restaurant: mcdonalds, dishes: [burger]).valid?).to be true
         end
 
         it "must have at least one dish" do
-            #to be continued
+            order1 = Order.new(customer: shirley, restaurant: mcdonalds)
+            expect(order1.save).to be false
+            order2 =Order.new(customer: shirley, restaurant: mcdonalds)
+            order2.dishes << burger
+            expect(order2.save).to be true
         end
 
         it "all dishes on an order must be from the same restaurant" do
             order1 = Order.new(customer: shirley, restaurant: mcdonalds)
-            OrderDish.new(order: order1, dish: burger)
+            order1.dishes << burger
             expect(order1.save).to be true
 
             order2 =Order.new(customer: shirley, restaurant: mcdonalds)
-            OrderDish.new(order: order2, dish: burger)
-            OrderDish.new(order: order2, dish: donut)
+            order2.dishes << burger
+            order2.dishes << donut
             expect(order2.save).to be false
         end
 

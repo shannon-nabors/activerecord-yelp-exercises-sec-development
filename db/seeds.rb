@@ -34,7 +34,7 @@ def add_dishes_to_order(restaurant_dishes, customer_id, restaurant_id)
     order = Order.new(customer_id: customer_id, restaurant_id: restaurant_id)
     dishes = restaurant_dishes.sample(rand(1..5))
     dishes.each do |dish|
-        OrderDish.create(order: order, dish: dish)
+        order.dishes << dish
     end
     order.save
 end
