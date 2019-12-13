@@ -65,6 +65,7 @@ class Dish < ActiveRecord::Base
     private
 
     def no_duplicate_tags
+        #should this be in dish_tag instead of here?
         if self.tags != self.tags.uniq
             errors.add(:tags, "A dish can't have two of the same tag")
         end
